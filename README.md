@@ -20,6 +20,16 @@ The project automates the following:
 
 The website is securely accessible at https://ansible.nikhilmishra.live with proper SSL encryption.
 
+## Learning Resources
+
+For a deep dive into this project:
+- Check out [LEARNING_GUIDE.md](LEARNING_GUIDE.md) for a comprehensive understanding of:
+  * Complete project implementation details
+  * Technical concepts and best practices
+  * Real-world applications and scaling
+  * Maintenance and troubleshooting
+  * Advanced topics and improvements
+
 ## Prerequisites
 
 1. **AWS Account** with two EC2 instances:
