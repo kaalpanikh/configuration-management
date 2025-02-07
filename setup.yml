@@ -1,0 +1,16 @@
+---
+- name: Configure AWS Linux Server
+  hosts: aws_servers
+  become: yes  # Use sudo for privileged operations
+  gather_facts: yes  # We need this for ansible_pkg_mgr
+  
+  pre_tasks:
+    - name: Wait for target to be reachable
+      wait_for_connection:
+        timeout: 60
+
+  roles:
+    - { role: base, tags: ['base'] }
+    - { role: nginx, tags: ['nginx'] }
+    - { role: app, tags: ['app'] }
+    - { role: ssh, tags: ['ssh'] }

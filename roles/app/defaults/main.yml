@@ -1,0 +1,7 @@
+---
+# Path to the website tarball on the control machine
+# website_tarball_path: path/to/website.tar.gz
+
+# GitHub repository URL (optional)
+website_repo_url: https://github.com/kaalpanikh/static-site-server
+website_repo_branch: main

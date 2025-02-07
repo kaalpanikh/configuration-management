@@ -1,0 +1,42 @@
+---
+- name: Debug ansible user
+  debug:
+    var: ansible_user
+    verbosity: 2
+
+- name: Debug ansible env
+  debug:
+    var: ansible_env
+    verbosity: 2
+
+- name: Ensure .ssh directory exists
+  file:
+    path: "/home/{{ ansible_user }}/.ssh"
+    state: directory
+    mode: "0700"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  become: yes
+
+- name: Add SSH public key to authorized_keys
+  authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ ssh_public_key | default('') }}"
+    state: present
+  when: ssh_public_key is defined
+  become: yes
+  ignore_errors: yes
+
+- name: Configure SSH security settings
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    backup: yes
+  loop:
+    - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no' }
+    - { regexp: '^PasswordAuthentication', line: 'PasswordAuthentication no' }
+    - { regexp: '^PubkeyAuthentication', line: 'PubkeyAuthentication yes' }
+  notify: restart sshd
+  become: yes

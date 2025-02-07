@@ -1,0 +1,3 @@
+---
+# SSH public key to add to authorized_keys
+ ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhQKmUNMfwviRLnxTRppQ+yC+tHgFYeX8fHtOvwcbZE0ag0EbQX9860oOtux/N52Kkcq7ltb9EDqYT6iaEkAZ0vc6K77+B9rdC16ARv1/1VRKa/qmuTflZqw4zej5lbVDuKenvv+Oyt1NPhJ8herEYsDqi3pPUB9U5AAPJmGv/H6zxUGoIikUOr4erEfxlpgpbj/sqgbF3olA84muQAtaF5kCPb97Azzbph9go/dpEOmlyj98DZEjGRE89K4pCEPj7CQBkFy4PugyfRpgdq26ESUOtEifc4+M2txTKnn66cvKNGZYNBM3Ptxf5iV2euTQ+2oprnKP2yrsUraQXjHyL roadmapsh-ansible-key

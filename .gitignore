@@ -398,3 +398,88 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Ansible
+*.retry
+*.pyc
+__pycache__/
+.ansible/
+
+# SSH Keys
+*.pem
+*.key
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Ansible
+*.retry
+ansible.cfg
+
+# SSH Keys
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+known_hosts
+authorized_keys
+
+# Logs
+*.log
+logs/
+log/
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.project

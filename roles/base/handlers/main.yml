@@ -1,0 +1,13 @@
+---
+- name: restart fail2ban
+  service:
+    name: fail2ban
+    state: restarted
+  become: yes
+
+- name: reload firewalld
+  service:
+    name: firewalld
+    state: reloaded
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'

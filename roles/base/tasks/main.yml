@@ -1,0 +1,130 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Update dnf cache
+  dnf:
+    update_cache: yes
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Upgrade all packages (apt)
+  apt:
+    upgrade: dist
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Upgrade all packages (dnf)
+  dnf:
+    name: "*"
+    state: latest
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+    
+- name: Install essential packages (apt)
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - vim
+    - curl
+    - git
+    - htop
+    - fail2ban
+    - ufw
+    - certbot
+    - python3-certbot-nginx
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install EPEL repository (Amazon Linux)
+  dnf:
+    name: epel-release
+    state: present
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Install essential packages (dnf)
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - vim
+    - curl
+    - git
+    - htop
+    - fail2ban
+    - firewalld
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Configure fail2ban
+  copy:
+    dest: /etc/fail2ban/jail.local
+    content: |
+      [DEFAULT]
+      bantime = 3600
+      findtime = 600
+      maxretry = 3
+      
+      [sshd]
+      enabled = true
+      port = ssh
+      filter = sshd
+      logpath = /var/log/auth.log
+  notify: restart fail2ban
+  become: yes
+
+- name: Configure UFW (Ubuntu)
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items:
+    - 22
+    - 80
+    - 443
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Enable UFW (Ubuntu)
+  ufw:
+    state: enabled
+    policy: deny
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Enable and start firewalld (RHEL/Amazon Linux)
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Allow SSH through firewalld (RHEL/Amazon Linux)
+  firewalld:
+    service: ssh
+    permanent: yes
+    state: enabled
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Allow HTTP through firewalld (RHEL/Amazon Linux)
+  firewalld:
+    service: http
+    permanent: yes
+    state: enabled
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Start and enable fail2ban
+  systemd:
+    name: fail2ban
+    state: started
+    enabled: yes
+  become: yes

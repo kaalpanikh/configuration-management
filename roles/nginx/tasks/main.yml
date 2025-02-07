@@ -1,0 +1,77 @@
+---
+- name: Install nginx (apt)
+  apt:
+    name: nginx
+    state: present
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install nginx (dnf)
+  dnf:
+    name: nginx
+    state: present
+  become: yes
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Create nginx configuration directory
+  file:
+    path: /etc/nginx/conf.d
+    state: directory
+    mode: "0755"
+  become: yes
+
+- name: Create nginx configuration
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    mode: "0644"
+  notify: restart nginx
+  become: yes
+
+- name: Create default site configuration
+  template:
+    src: default-site.conf.j2
+    dest: "{{ (ansible_pkg_mgr == 'apt') | ternary('/etc/nginx/sites-available/default', '/etc/nginx/conf.d/default.conf') }}"
+    mode: "0644"
+  notify: restart nginx
+  become: yes
+
+- name: Enable default site (Ubuntu)
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify: restart nginx
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Start and enable nginx service
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Obtain SSL certificate
+  command: >
+    certbot --nginx 
+    -d ansible.nikhilmishra.live
+    --non-interactive 
+    --agree-tos 
+    --email nm30472@gmail.com
+    --redirect
+  args:
+    creates: /etc/letsencrypt/live/ansible.nikhilmishra.live/fullchain.pem
+  become: yes
+  when: ansible_pkg_mgr == 'apt'
+  notify: restart nginx
+
+- name: Add certbot renewal cron job
+  cron:
+    name: "Certbot Renewal"
+    job: "/usr/bin/certbot renew --quiet --no-self-upgrade"
+    minute: "0"
+    hour: "3"
+    weekday: "1"
+  become: yes
+  when: ansible_pkg_mgr == 'apt'

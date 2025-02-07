@@ -1,0 +1,50 @@
+---
+- name: Set web server user (Ubuntu)
+  set_fact:
+    web_server_user: www-data
+    web_server_group: www-data
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Set web server user (Amazon Linux)
+  set_fact:
+    web_server_user: nginx
+    web_server_group: nginx
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Install git
+  package:
+    name: git
+    state: present
+  become: yes
+
+- name: Remove existing web directory
+  file:
+    path: /var/www/html
+    state: absent
+  become: yes
+
+- name: Create web directory
+  file:
+    path: /var/www/html
+    state: directory
+    owner: "{{ web_server_user }}"
+    group: "{{ web_server_group }}"
+    mode: "0755"
+  become: yes
+
+- name: Clone website repository
+  git:
+    repo: "https://github.com/kaalpanikh/static-site-server"
+    dest: /var/www/html
+    version: main
+    force: yes
+  become: yes
+
+- name: Set proper permissions
+  file:
+    path: /var/www/html
+    owner: "{{ web_server_user }}"
+    group: "{{ web_server_group }}"
+    mode: "0755"
+    recurse: yes
+  become: yes
