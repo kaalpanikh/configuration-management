@@ -18,7 +18,13 @@ The project automates the following:
 
 ![SSL Proof](images/ssl-proof.png)
 
-The website is securely accessible at https://ansible.nikhilmishra.live with proper SSL encryption.
+Successfully set up a secure website with:
+- HTTPS encryption using Let's Encrypt SSL
+- Automatic HTTP to HTTPS redirection
+- Modern security headers
+- Automated certificate renewal
+
+The website is securely accessible at https://ansible.nikhilmishra.live
 
 ## Learning Resources
 
