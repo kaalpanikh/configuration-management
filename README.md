@@ -49,6 +49,54 @@ For a deep dive into this project:
 3. **Domain Name** pointing to the target node's IP address
    - Our example uses: ansible.nikhilmishra.live
 
+## Server Migration Guide
+
+This project supports easy server migration scenarios. Here's how to handle different migration cases:
+
+### Target Node Migration with Control Node IP Update
+
+When you need to:
+- Deploy to a new target server
+- Update control node's IP (same server, new IP)
+- Use a new domain name
+
+Follow these steps:
+
+1. **Update Configuration Files**:
+   ```bash
+   # 1. inventory.ini - Update IPs
+   [aws_servers]
+   aws_instance ansible_host=<NEW_TARGET_IP> ...
+   control_node ansible_host=<NEW_CONTROL_IP> ...
+
+   # 2. roles/nginx/tasks/main.yml - Update domain
+   certbot --nginx -d <NEW_DOMAIN> ...
+
+   # 3. roles/nginx/templates/default-site.conf.j2
+   server_name <NEW_DOMAIN>;
+   ```
+
+2. **DNS Configuration**:
+   - Update A record for new domain → new target IP
+   - Wait for DNS propagation
+
+3. **Deploy**:
+   ```bash
+   # Copy files to control node
+   ./copy_to_control.sh
+
+   # SSH and run playbook
+   ssh -i ~/.ssh/my_first_key ec2-user@<NEW_CONTROL_IP>
+   cd ~/ansible-project
+   ansible-playbook setup.yml -i inventory.ini
+   ```
+
+This approach demonstrates the power of Infrastructure as Code (IaC):
+- Configurations are reusable
+- Deployments are consistent
+- Migration is streamlined
+- No manual server setup needed
+
 ## Project Structure
 
 ```
