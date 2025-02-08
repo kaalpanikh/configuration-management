@@ -54,14 +54,14 @@
 
 - name: Obtain SSL certificate
   command: >
-    certbot --nginx 
-    -d ansible.nikhilmishra.live
-    --non-interactive 
-    --agree-tos 
+    certbot --nginx
+    -d iac.nikhilmishra.live
+    --non-interactive
+    --agree-tos
     --email nm30472@gmail.com
     --redirect
   args:
-    creates: /etc/letsencrypt/live/ansible.nikhilmishra.live/fullchain.pem
+    creates: /etc/letsencrypt/live/iac.nikhilmishra.live/fullchain.pem
   become: yes
   when: ansible_pkg_mgr == 'apt'
   notify: restart nginx
